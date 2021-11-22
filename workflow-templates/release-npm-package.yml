@@ -1,7 +1,7 @@
 name: Build and release npm package
 on:
   push:
-    branches: [$default-branch]
+    branches: ['$default-branch']
   pull_request:
     branches: ['*']
 jobs:
@@ -41,6 +41,6 @@ jobs:
 
       - name: Publish production package to GitHub Packages
         run: npm publish --access restricted
-        if: contains(github.ref, $default-branch)
+        if: contains(github.ref, '$default-branch')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
