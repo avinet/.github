@@ -1,0 +1,7 @@
+{
+  "name": "Build and release NPM package",
+  "description": "Release a JavaScript package to NPM (@avinet scoped packages)",
+  "iconName": "npm",
+  "categories": ["JavaScript", "TypeScript"],
+  "filePatterns": ["package.json$"]
+}
