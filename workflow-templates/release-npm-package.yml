@@ -19,7 +19,19 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@avinet'
-          cache: 'npm'
+
+      - name: Cache node_modules
+        id: cache-node-modules 
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       # ci requires a package-lock.json to be present and ensures the same
       # package versions are used during this build, change this to install if
@@ -27,6 +39,7 @@ jobs:
       #
       # Scripts are ignored to avoid scripts stealing the NODE_AUTH_TOKEN
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts
         env:
           # AVINET_PACKAGES_TOKEN is an organization wide secret, no need to set per repository
@@ -34,6 +47,7 @@ jobs:
 
       # Run scripts without NODE_AUTH_TOKEN
       - name: Run post-install scripts
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm rebuild
 
       - name: Build package
